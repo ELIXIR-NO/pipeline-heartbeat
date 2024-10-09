@@ -51,7 +51,7 @@ jobs:
         run: |
           VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml)
           echo "Bumped to: $VERSION"
-          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
   build_and_push:
     runs-on: ubuntu-latest
