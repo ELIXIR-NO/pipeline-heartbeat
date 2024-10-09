@@ -1,5 +1,5 @@
 # Use official Python image
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 # Install curl and other needed tools for Poetry installation
 RUN apt-get update && apt-get install -y curl
