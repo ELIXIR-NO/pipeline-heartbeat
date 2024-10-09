@@ -1,14 +1,23 @@
 # Use official Python image
 FROM python:3.9-slim
 
+# Install curl and other needed tools for Poetry installation
+RUN apt-get update && apt-get install -y curl
+
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Add Poetry to PATH
+ENV PATH="/root/.local/bin:$PATH"
+
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy requirements.txt
-COPY requirements.txt .
+# Copy pyproject.toml and poetry.lock to the container
+COPY pyproject.toml poetry.lock* /app/
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install the dependencies using Poetry (no venvs in Docker)
+RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
 
 # Copy the rest of the application code
 COPY . .
