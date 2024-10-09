@@ -13,6 +13,8 @@ permissions:
 jobs:
   bump_version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract_version.outputs.version }}
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
@@ -73,5 +75,5 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/${{ env.repo_name }}:${{ env.version }}
+            ghcr.io/${{ env.repo_name }}:${{ needs.bump_version.steps.extract_version.outputs.version }}
             ghcr.io/${{ env.repo_name }}:latest
