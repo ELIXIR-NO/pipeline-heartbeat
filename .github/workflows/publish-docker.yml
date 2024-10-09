@@ -27,12 +27,21 @@ jobs:
       - name: Install bump2version
         run: |
           pip install bump2version
+      - name: Determine version bump type
+        id: version_type
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" =~ "major" ]]; then
+            echo "bump_type=major" >> $GITHUB_ENV
+          elif [[ "${{ github.event.head_commit.message }}" =~ "minor" ]]; then
+            echo "bump_type=minor" >> $GITHUB_ENV
+          else
+            echo "bump_type=patch" >> $GITHUB_ENV
       - name: Bump Version
         id: bumpversion
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          bump2version patch  # You can change this to minor or major
+          bump2version ${{ env.bump_type }}
           git push --follow-tags
 
   build_and_push:
@@ -52,5 +61,5 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/ELIXIR-NO/pipeline-heartbeat:${{ github.ref_name }}  # Image tagged with Git ref
-            ghcr.io/ELIXIR-NO/pipeline-heartbeat:latest  # Always update 'latest'
+            ghcr.io/ELIXIR-NO/pipeline-heartbeat:${{ github.ref_name }}
+            ghcr.io/ELIXIR-NO/pipeline-heartbeat:latest
