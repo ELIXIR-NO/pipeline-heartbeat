@@ -51,6 +51,11 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
+      - name: Set Repository Name
+        id: repo_name
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "repo_name=$REPO_NAME" >> $GITHUB_ENV
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -62,5 +67,5 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/ELIXIR-NO/pipeline-heartbeat:${{ github.ref_name }}
-            ghcr.io/ELIXIR-NO/pipeline-heartbeat:latest
+            ghcr.io/${{ env.repo_name }}:${{ github.ref_name }}
+            ghcr.io/${{ env.repo_name }}:latest
