@@ -44,6 +44,7 @@ jobs:
           git config user.email "actions@github.com"
           bump2version ${{ env.bump_type }}
           git push --follow-tags
+          echo "version=$(bump2version --dry-run --list | grep new_version | sed -r s,'^.*=',,)" >> $GITHUB_ENV
 
   build_and_push:
     runs-on: ubuntu-latest
@@ -67,5 +68,5 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/${{ env.repo_name }}:${{ github.ref_name }}
+            ghcr.io/${{ env.repo_name }}:${{ env.version }}
             ghcr.io/${{ env.repo_name }}:latest
