@@ -48,6 +48,7 @@ jobs:
         id: extract_version
         run: |
           VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml)
+          echo "Bumped to: $VERSION"
           echo "version=$VERSION" >> $GITHUB_ENV
 
   build_and_push:
