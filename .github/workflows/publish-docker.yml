@@ -48,7 +48,7 @@ jobs:
         id: extract_version
         run: |
           VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_ENV
 
   build_and_push:
     runs-on: ubuntu-latest
@@ -72,5 +72,5 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/${{ env.repo_name }}:${{ env.VERSION }}
+            ghcr.io/${{ env.repo_name }}:${{ env.version }}
             ghcr.io/${{ env.repo_name }}:latest
