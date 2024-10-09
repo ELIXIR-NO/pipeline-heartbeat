@@ -36,6 +36,7 @@ jobs:
             echo "bump_type=minor" >> $GITHUB_ENV
           else
             echo "bump_type=patch" >> $GITHUB_ENV
+          fi
       - name: Bump Version
         id: bumpversion
         run: |
