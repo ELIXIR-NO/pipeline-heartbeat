@@ -77,17 +77,15 @@ cd heartbeat-service
 ### Set Up Virtual Environment
 
 ```bash
-python3 -m venv venv
+python -m venv venv
 source venv/bin/activate # On Windows, use venv\Scripts\activate
+pip install poetry
+poetry install
 ```
 
-### Install Dependencies
+## Configuration
 
-```bash
-pip install -r requirements.txt
-```
-
-## Configuration (Common for both pub/sub)
+This is common for both pub/sub.
 
 ```bash
 export HEARTBEAT_MODE=publisher # or subscriber
@@ -109,7 +107,7 @@ export REDIS_PORT=6379
 export REDIS_DB=0
 ```
 
-## Run the application
+## Running the application
 
 ```bash
 python heartbeat.py
