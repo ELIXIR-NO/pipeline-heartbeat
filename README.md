@@ -90,21 +90,101 @@ This is common for both pub/sub.
 ```bash
 export HEARTBEAT_MODE=publisher # or subscriber
 export RABBITMQ_HOST=
-export RABBITMQ_PORT=5672
+export RABBITMQ_PORT=5672 # defaults to 5672
 export RABBITMQ_USER=
 export RABBITMQ_PASS=
 export RABBITMQ_VHOST=
 export RABBITMQ_EXCHANGE=
 export RABBITMQ_QUEUE=
 export RABBITMQ_ROUTING_KEY=
-export RABBITMQ_TLS=
-export RABBITMQ_CA_CERT_PATH=
+export RABBITMQ_TLS= # `true` or `false`
+export RABBITMQ_CA_CERT_PATH= # The code 'assumes' it is only server-side authentication
 export RABBITMQ_TLS_PORT=5671
+# Below configs are only needed for `publisher`
 export PUBLISH_INTERVAL=60
 export RABBITMQ_MANAGEMENT_PORT=15671
+# Below configs are only needed for `subscriber`
 export REDIS_HOST=redis
 export REDIS_PORT=6379
 export REDIS_DB=0
+```
+
+### Publisher Configuration
+
+To set up the publisher, specify the configuration file as follows and map it to the container's home directory:
+
+```json
+{
+  "heartbeat": {
+    "hosts": [
+      {
+        "host": "doa",
+        "port": "8080",
+        "name": "sda-doa"
+      },
+      {
+        "host": "db",
+        "port": "5432",
+        "name": "sda-db"
+      }
+    ],
+    "rmq_consumers": [
+      {
+        "queue": "inbox",
+        "listeners": [
+          {
+            "tag": "mq-interceptor",
+            "name": "mq-interceptor"
+          }
+        ]
+      },
+      {
+        "queue": "ingest",
+        "listeners": [
+          {
+            "tag": "sda-ingest",
+            "name": "sda-ingest"
+          }
+        ]
+      },
+      ...
+    ]
+  }
+}
+```
+
+- `hosts`: Each entry represents a simple socket ping configuration for the specified `host` and `port`. The `name` field is for display purposes only.
+- `rmq_consumers`: Each entry specifies a `queue` and its associated `listeners`. Each `tag` represents a RabbitMQ consumer `tag` (c-tag). When defining tags, the provided string is used in a `re.search` pattern match to identify active listeners for the specified queue. For more on `re.search`, see the [Python documentation](https://docs.python.org/3/library/re.html#re.search).
+
+### Docker Compose example
+
+```yml
+  heartbeat-pub:
+    container_name: heartbeat-pub
+    hostname: heartbeat-pub
+    image: ghcr.io/elixir-no/pipeline-heartbeat:latest
+    environment:
+      - HEARTBEAT_MODE=publisher
+      - RABBITMQ_HOST=mq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=admin
+      - RABBITMQ_PASS=admin
+      - RABBITMQ_VHOST=test
+      - RABBITMQ_EXCHANGE=my_exchange
+      - RABBITMQ_QUEUE=heartbeat
+      - RABBITMQ_ROUTING_KEY=my_exchange_heartbeat
+      - RABBITMQ_TLS=false
+      - RABBITMQ_CA_CERT_PATH=
+      - RABBITMQ_TLS_PORT=5671
+      - PUBLISH_INTERVAL=60
+      - RABBITMQ_MANAGEMENT_PORT=15671
+    volumes:
+      - ./heartbeat-pub/publisher_config.json:/publisher_config.json
+    depends_on:
+      mq:
+        condition: service_healthy
+    links:
+      - mq
 ```
 
 ## Running the application
