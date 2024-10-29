@@ -22,7 +22,7 @@ def check_rmq_consumers(rmq_consumers_conf):
     for rmq in rmq_consumers_conf:
         vhost = Config.RABBITMQ_VHOST
         queue = rmq['queue']
-        url = f"{base_url}/queues/{vhost}/{queue}"
+        url = f"{base_url}/queues/{vhost.strip('/')}/{queue}"
         logger.info(f"Checking RabbitMQ consumers for queue '{queue}' in vhost '{vhost}'")
         try:
             # if mutual TLS: verify="/path/to/ca.pem"
