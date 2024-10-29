@@ -15,10 +15,18 @@ def establish_connection():
         # Setup TLS connection if configured
         logger.info("Using TLS for TSD RabbitMQ connection.")
         import ssl
-        context = pika.SSLOptions(
-            ssl.create_default_context(cafile=Config.RABBITMQ_CA_CERT_PATH),
-            Config.RABBITMQ_HOST
-        )
+        if getattr(Config, 'RABBITMQ_CA_CERT_PATH', ''):
+            # If CA certificate path is provided
+            context = pika.SSLOptions(
+                ssl.create_default_context(cafile=Config.RABBITMQ_CA_CERT_PATH),
+                Config.RABBITMQ_HOST
+            )
+        else:
+            # Fallback to default SSL context if CA certificate path is not set
+            context = pika.SSLOptions(
+                ssl.create_default_context(),  # Default context without a CA file
+                Config.RABBITMQ_HOST
+            )
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=Config.RABBITMQ_HOST,

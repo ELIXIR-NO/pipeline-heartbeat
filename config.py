@@ -13,7 +13,7 @@ class Config:
     RABBITMQ_QUEUE = os.getenv('RABBITMQ_QUEUE', 'my_queue')
     RABBITMQ_ROUTING_KEY = os.getenv('RABBITMQ_ROUTING_KEY', 'service.heartbeat')
     RABBITMQ_TLS = os.getenv('RABBITMQ_TLS', 'false').lower() == 'true'
-    RABBITMQ_CA_CERT_PATH = os.getenv('RABBITMQ_CA_CERT_PATH', '/path/to/ca_cert.pem')
+    RABBITMQ_CA_CERT_PATH = os.getenv('RABBITMQ_CA_CERT_PATH', '')
     RABBITMQ_TLS_PORT = int(os.getenv('RABBITMQ_TLS_PORT', 5671))
     PUBLISH_INTERVAL = int(os.getenv('PUBLISH_INTERVAL', 60))  # Publish interval in seconds
     RABBITMQ_MANAGEMENT_PORT = int(os.getenv('RABBITMQ_MANAGEMENT_PORT', 15672))
