@@ -4,6 +4,7 @@ import os
 class Config:
     # Fetch configuration from environment variables
     HEARTBEAT_MODE = os.getenv("HEARTBEAT_MODE", "publisher")  # 'publisher' or 'subscriber'
+    PUBLISHER_CONFIG_PATH = os.getenv("PUBLISHER_CONFIG_PATH", "/publisher_config.json")
     RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
     RABBITMQ_PORT = int(os.getenv('RABBITMQ_PORT', 5672))
     RABBITMQ_USER = os.getenv('RABBITMQ_USER', 'guest')

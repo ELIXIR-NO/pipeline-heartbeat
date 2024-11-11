@@ -100,10 +100,9 @@ def check_hosts(hosts):
 
 
 def publish_heartbeat(_, channel):
-    # Read the publisher config json
     # If not path is specified, we look the configuration file in the
     # HOME directory of the container.
-    with open("/publisher_config.json", "r") as f:
+    with open(Config.PUBLISHER_CONFIG_PATH, "r") as f:
         config = json.load(f)
         logger.info("Publisher configuration loaded.")
     # Extract hosts and RabbitMQ consumers from config
