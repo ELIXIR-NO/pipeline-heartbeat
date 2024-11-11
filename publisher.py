@@ -10,6 +10,7 @@ from loguru import logger
 from config import Config
 from logging_config import setup_logging
 from models import Component
+from urllib.parse import quote
 
 setup_logging()
 
@@ -22,7 +23,7 @@ def check_rmq_consumers(rmq_consumers_conf):
     for rmq in rmq_consumers_conf:
         vhost = Config.RABBITMQ_VHOST
         queue = rmq['queue']
-        url = f"{base_url}/queues/{vhost}/{queue}"
+        url = f"{base_url}/queues/{quote(vhost, safe='')}/{queue}"
         logger.info(f"Checking RabbitMQ consumers for queue '{queue}' in vhost '{vhost}'")
         try:
             # if mutual TLS: verify="/path/to/ca.pem"
